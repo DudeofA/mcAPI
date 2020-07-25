@@ -1,0 +1,22 @@
+<html>
+<head>
+    <script>
+        function validateForm() {
+            var x = document.forms["mcQuery"]["ip"].value;
+            if (x == "") {
+                alert("Fill in the darn field");
+                return false;
+            }
+        }
+    </script>    
+</head>  
+
+<body>
+    <h1>Query Minecraft Server</h1>
+    <form name="mcQuery" action="/mc" onsubmit="return validateForm()" method="get">
+        IP/Hostname: <input type="text" name="ip">
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+</html>

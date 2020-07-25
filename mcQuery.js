@@ -36,15 +36,15 @@ module.exports = async function mcQuery(ip, port) {
         let dns = require('dns').promises;
 
         await dns.resolveSrv("_minecraft._tcp." + server.ip)
-        .then((result) => {
-            server.port = result[0].port;
-        })
-        .catch((err) => {
-            server.port = 25565;
-        });      
+            .then((result) => {
+                server.port = result[0].port;
+            })
+            .catch((err) => {
+                server.port = 25565;
+            });
     }
 
-    var promise = new Promise(function(resolve, reject) {
+    var promise = new Promise(function (resolve, reject) {
 
         // Make initial connection and send the query packet
         const net = require('net')
@@ -53,7 +53,7 @@ module.exports = async function mcQuery(ip, port) {
             client.write(buff);
         });
 
-        client.setTimeout(5000);
+        client.setTimeout(1000);
 
         // On data reception, validate and save
         client.on('data', (data) => {
@@ -96,7 +96,7 @@ module.exports = async function mcQuery(ip, port) {
 
         client.on('error', (err) => {
 
-            switch(err.code) {
+            switch (err.code) {
                 case "ENOTFOUND":
                     server.error = "hostname/ip address not found";
                     break;
@@ -108,6 +108,9 @@ module.exports = async function mcQuery(ip, port) {
                     break;
                 case "EINVAL":
                     server.error = "invalid hostname/ip address";
+                    break;
+                case "EAI_AGAIN":
+                    server.error = "dns lookup failed";
                     break;
                 default:
                     console.log("ERRCODE: " + err.code);
