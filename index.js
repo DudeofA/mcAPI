@@ -1,6 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { readFile } = require('fs').promises;
+const fetch = require('node-fetch');
+const axios = require('axios');
+const qs = require('qs');
 
 const mcQuery = require('./mcQuery.js');
 
@@ -49,6 +52,27 @@ app.use('/mc/:ip', async (request, response) => {
     .then((server) => response.send(server))
     .catch((err) => response.send(err));
 })
+
+// Meme webpage
+app.get('/meme', async (request, response) => {
+    let rawMemes = await fetch('https://api.imgflip.com/get_memes');
+    let memeData = await rawMemes.json();
+
+    let randMeme = memeData.data.memes[Math.floor(Math.random()*memeData.data.memes.length)];
+
+    const data = {
+        template_id: randMeme.id,
+        username: "kylixor",
+        password: process.env.KYIMGFLIPCRED,
+        text0: "penis",
+        text1: "balls"
+    };
+
+    const resp = await axios.post('https://api.imgflip.com/caption_image', qs.stringify(data));
+
+    body = "<html><img src=\"" + resp.data.data.url + "\"></html>";
+    response.send(body);
+});
 
 var server = app.listen(process.env.KYPORT || 3000, () => {
     console.log(`App available on https://api.kylixor.com on port ` + server.address().port);
