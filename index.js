@@ -54,10 +54,9 @@ app.use('/mc/:ip', async (request, response) => {
 
 // Meme webpage
 app.get('/meme', async (request, response) => {
-    let rawMemes = await axios.get('https://api.imgflip.com/get_memes');
-    let memeData = await rawMemes.json();
+    let memeData = await axios.get('https://api.imgflip.com/get_memes');
 
-    let randMeme = memeData.data.memes[Math.floor(Math.random()*memeData.data.memes.length)];
+    let randMeme = memeData.data.data.memes[Math.floor(Math.random()*memeData.data.data.memes.length)];
 
     const data = {
         template_id: randMeme.id,
