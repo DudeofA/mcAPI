@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const { readFile } = require('fs').promises;
 const axios = require('axios');
 const qs = require('qs');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const mcQuery = require('./mcQuery.js');
 
@@ -10,8 +12,7 @@ const app = express();
 app.use(bodyParser.json());
 
 if (process.env.NODE_ENV !== 'production') {
-    const dotenv = require('dotenv');
-    dotenv.config();
+    
 }
 
 // Root directory
@@ -67,7 +68,6 @@ app.get('/meme', async (request, response) => {
     };
 
     const resp = await axios.post('https://api.imgflip.com/caption_image', qs.stringify(data));
-
     body = "<html><img src=\"" + resp.data.data.url + "\"></html>";
     response.send(body);
 });
