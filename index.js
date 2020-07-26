@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { readFile } = require('fs').promises;
-const fetch = require('node-fetch');
 const axios = require('axios');
 const qs = require('qs');
 
@@ -55,7 +54,7 @@ app.use('/mc/:ip', async (request, response) => {
 
 // Meme webpage
 app.get('/meme', async (request, response) => {
-    let rawMemes = await fetch('https://api.imgflip.com/get_memes');
+    let rawMemes = await axios.get('https://api.imgflip.com/get_memes');
     let memeData = await rawMemes.json();
 
     let randMeme = memeData.data.memes[Math.floor(Math.random()*memeData.data.memes.length)];
